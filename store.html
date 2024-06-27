@@ -1,0 +1,67 @@
+<html>
+    <div class="product-display">
+        <div class="product-container">
+          <div class="product-image">
+            <img :src="image" />
+          </div>
+        </div>
+      </div>
+      <div class="product-info">
+        <!-- 3.6. Add a new link to the product name, so that when we click on the product name, it will lead the user to www.camt.cmu.ac.th. The link attribute must be binded using the v-bind or 
+                shorthand of the v-bind command. -->
+        <h1><a :href="productLink" target="_blank">{{title}}</a></h1>
+
+        <!-- 4.9 display onsale -->
+        <!-- <p v-if="onsale">On Sale!</p>
+        <p v-else>Not on Sale</p> -->
+        
+            <!-- 8.5 -->
+            <p v-if="onsale">{{ saleMessage }}</p>
+
+
+
+
+        <!-- 6.7 Toggle inStock status button -->
+        <button class="button" @click="toggleInStock">
+          Toggle In Stock Status
+        </button>
+
+        <!-- 4.1 -->
+        <!-- <p v-if="inStock">In Stock</p> -->
+
+        <!-- 4.5 to 4.8 add inventory -->
+        <p v-if="inventory > 10">In Stock</p>
+        <p v-if="inventory <= 10 && inventory > 0">Almost out of Stock</p>
+        <p v-else>Out of stock</p>
+        <!-- 5.5 display sizes -->
+        <p>
+          Sizes:
+          <li v-for="size in sizes">{{ size }}</li>
+        </p>
+        <!-- 5.2 -->
+        <ul>
+          <li v-for="detail in details">{{detail}}</li>
+        </ul>
+
+        <!-- 5.4 -->
+        <!-- <div v-for="variant in variants" :key="variant.id">{{variant.color}}</div> -->
+        <div
+          v-for="(variant,index) in variants"
+          :key="variant.id"
+          @mouseover="updateVariant(index)"
+          class="color-circle"
+          :style="{backgroundColor: variant.color}"
+        >
+          {{variant.color}}
+        </div>
+
+        <button
+          class="button"
+          :disabled="!inStock"
+          @click="addToCart"
+          :class="{disabledButton: !inStock}"
+        >
+          Add to Cart
+        </button>
+      </div>
+</html>

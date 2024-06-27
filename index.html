@@ -2,21 +2,126 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Intro SE331</title>
-    <!-- Import Styles -->
-    <link rel="stylesheet" href="./assets/styles.css" />
-    <!-- Import Vue.js -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <meta charset="UTF-8" />
+  <title>Intro SE331</title>
+  <!-- Import Styles -->
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <!-- Import Vue.js -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
 <body>
-    <div id="app">
-        <h1>Product goes here</h1>
-    </div>
+  <div id="app">
+    <div class="nav-bar"></div>
+    <div class="cart">Cart({{ cart.length }})</div>
+    <product-display :premium="premium" @add-to-cart="updateCart"></product-display>
+  </div>
 
-    <!-- Import Js -->
-    <script src="./main.js"></script>
+  <!-- Import Js -->
+  <script src="./components/ProductDisplay.js"></script>
+  <script src="./components/ReviewForm.js"></script>
+  <script src="./components/ReviewList.js"></script>
+  <script src="./main.js"></script>
 </body>
+<script>
+  const { createApp, ref, computed } = Vue;
+  const app = createApp({
+    setup() {
+      // const product = ref('Socks')
+      // 2.4
+      const product = ref("Boots");
+
+      // 8.1
+      const brand = ref("SE 331");
+      //
+      const image = computed(() => {
+        return variants.value[selectedVariant.value].image;
+      });
+      const inStock = computed(() => {
+        return variants.value[selectedVariant.value].quantity;
+      });
+      const productLink = ref("http://www.camt.cmu.ac.th");
+      // const inStock = ref(true)
+      const inventory = ref(1);
+      const onsale = ref(true);
+      // 5.1
+      const details = ref(["50% cotton", "30% wool", "20% polyester"]);
+      const variants = ref([
+        {
+          id: 2234,
+          color: "green",
+          image: "./assets/images/socks_green.jpg",
+          quantity: 50,
+        },
+        {
+          id: 2235,
+          color: "blue",
+          image: "./assets/images/socks_blue.jpg",
+          quantity: 0,
+        },
+      ]);
+      const selectedVariant = ref(0);
+
+      //5.5
+      const sizes = ref(["S", "M", "L"]);
+
+      //6.1
+      const cart = ref(0);
+
+      //6.4 Implement the addToCart method
+      function addToCart() {
+        cart.value += 1;
+      }
+
+      //6.6 Add the update image which will change the image attribute
+      function updateImage(variantImage) {
+        image.value = variantImage;
+      }
+
+      //6.7 Add new button which will toggle the inStock status
+      function toggleInStock() {
+        inStock.value = !inStock.value;
+      }
+
+      // 8.2
+      const title = computed(() => {
+        return brand.value + " " + product.value;
+      });
+
+      function updateVariant(index) {
+        selectedVariant.value = index;
+      }
+
+      //8.5
+      const saleMessage = computed(() => {
+        if (onsale.value) {
+          return `${brand.value} ${product.value} is on sale`;
+        }
+        return '';
+      });
+      return {
+        title,
+        image,
+        productLink,
+        inStock,
+        inventory,
+        onsale,
+        details,
+        variants,
+        sizes,
+        cart,
+        addToCart,
+        updateImage,
+        toggleInStock,
+        updateVariant,
+        saleMessage
+      };
+    },
+  });
+
+  app.component('product-display', productDisplay);
+  app.mount("#app");
+
+</script>
 
 </html>

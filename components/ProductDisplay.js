@@ -9,11 +9,25 @@ const productDisplay = {
           </div>
         </div>
       <div class="product-info">
-        <h1>{{ title }}</h1>
-        <p v-if="inventory > 10">In Stock</p>
-        <p v-else-if="inventory <= 10 && inventory > 0">Almost Out of Stock</p>
-        <p v-else>Out of Stock</p>
+ <!-- 3.6. Add a new link to the product name, so that when we click on the product name, it will lead the user to www.camt.cmu.ac.th. The link attribute must be binded using the v-bind or 
+                shorthand of the v-bind command. -->
+        <h1><a :href="productLink" target="_blank">{{title}}</a></h1>
+
+        <div class="StockButton">
+        <button class="button" @click="updateStock" v-if="inStock">
+          In Stock
+        </button>
+        <button class="button" @click="updateStock" v-else>
+          Out of Stock
+        </button>
+      </div>
+       
+        <p>Sizes: {{ sizes.join(', ') }}</p>
+        <product-details></product-details>
+
         <p>Shipping: {{ shipping }}</p>
+
+
         <div
           v-for="(variant, index) in variants"
           :key="variant.id"
@@ -30,12 +44,21 @@ const productDisplay = {
         >
           Add To Cart
         </button>
+      <button
+          class="button"
+          :disabled="!inStock"
+          @click.prevent="removeFromCart"
+          :class="{disabledButton: !inStock}"
+        >
+          Remove From Cart
+        </button>
+      
       </div>
       <review-list v-if="reviews.length" :reviews="reviews"></review-list>
       <review-form @review-submitted="addReview"></review-form>
       </div>
       `,
-      //9.7
+  //9.7
   props: {
     premium: Boolean,
   },
@@ -50,10 +73,13 @@ const productDisplay = {
     });
     const product = ref("Boots");
     const brand = ref("SE 331");
+     //5.5
+     const sizes = ref(["S", "M", "L"]);
+     const productLink = ref("http://www.camt.cmu.ac.th");
+
     // const image = ref("./assets/images/socks_green.jpg");
     // const inStock = ref(true);
     const inventory = ref(100);
-    const details = ref(["50% cotton", "30% wool", "20% polyester"]);
     const variants = ref([
       {
         id: 2234,
@@ -72,7 +98,7 @@ const productDisplay = {
 
     //review variables
     const reviews = ref([]);
-
+    
     //add review function
     const addReview = (review) => {
       reviews.value.push(review);
@@ -90,18 +116,27 @@ const productDisplay = {
     const addToCart = () => {
       emit("add-to-cart", variants.value[selectedVariant.value].id);
     };
+
+    const removeFromCart = () => {
+      emit("remove-from-cart", variants.value[selectedVariant.value].id);
+    };
     const title = computed(() => {
       return brand.value + " " + product.value;
     });
     const updateImage = (variantImage) => {
       image.value = variantImage;
     };
+    //6.7 Add new button which will toggle the inStock status
+    function toggleInStock() {
+      inStock.value = !inStock.value;
+    }
     return {
       title,
+      productLink,
+      sizes,
       image,
       inStock,
       inventory,
-      details,
       variants,
       addToCart,
       updateImage,
@@ -109,6 +144,8 @@ const productDisplay = {
       shipping,
       addReview,
       reviews,
+      toggleInStock,
+      removeFromCart
     };
   },
 };

@@ -1,7 +1,7 @@
 const reviewForm = {
     template:
-      // html
-      `
+    /* html */
+    `
       <form class="review-form" @submit.prevent="onSubmit">
         <h3>Leave a review</h3>
         <label for="name">Name: </label>
@@ -19,15 +19,12 @@ const reviewForm = {
           <option>1</option>
         </select>
   
-        <div>
-          <input
-            id="recommend"
-            type="checkbox"
-            v-model.boolean="form.recommend"
-            style="height: 20px; width: 20px;"
-          />
-          <label for="checkbox"> Would you recommend this product? </label>
-        </div>
+       
+        <label for="recommend">Would you recommend this product?</label>
+        <select id="recommend" v-model="recommend">
+            <option>Yes</option>
+            <option>No</option>
+        </select>   
   
         <input class="button" type="submit" value="submit">
       </form>
@@ -42,7 +39,7 @@ const reviewForm = {
 
       //input all data before submit
       const onSubmit = () => {
-        if (!form.name || !form.review || !form.rating) {
+        if (form.name === ''|| form.review === '' || form.rating === '') {
           alert("Review is incomplete. Please fill out every field.");
           return;
         }
@@ -53,13 +50,13 @@ const reviewForm = {
           recommend: form.recommend,
         };
         emit("review-submitted", productReview);
-        form.name = "";
-        form.review = "";
+        form.name = '';
+        form.review = '';
         form.rating = null;
         form.recommend = null;
       };
       return {
-        form,
+        ...toRefs(form),
         onSubmit,
       };
     },

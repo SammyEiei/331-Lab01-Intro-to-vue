@@ -14,16 +14,18 @@
   <div id="app">
     <div class="nav-bar"></div>
     <div class="cart">Cart({{ cart.length }})</div>
-    <product-display :premium="premium" @add-to-cart="updateCart"></product-display>
+    <product-display :premium="premium" @add-to-cart="updateCart" @remove-from-cart="removeFromCart"></product-display>
+    
   </div>
 
   <!-- Import Js -->
   <script src="./components/ProductDisplay.js"></script>
   <script src="./components/ReviewForm.js"></script>
   <script src="./components/ReviewList.js"></script>
+  <script src="./components/ProductDetails.js"></script>
   <script src="./main.js"></script>
 </body>
-<script>
+<!-- <script>
   const { createApp, ref, computed } = Vue;
   const app = createApp({
     setup() {
@@ -40,7 +42,6 @@
       const inStock = computed(() => {
         return variants.value[selectedVariant.value].quantity;
       });
-      const productLink = ref("http://www.camt.cmu.ac.th");
       // const inStock = ref(true)
       const inventory = ref(1);
       const onsale = ref(true);
@@ -62,26 +63,36 @@
       ]);
       const selectedVariant = ref(0);
 
-      //5.5
-      const sizes = ref(["S", "M", "L"]);
+     
 
       //6.1
       const cart = ref(0);
 
       //6.4 Implement the addToCart method
-      function addToCart() {
-        cart.value += 1;
-      }
+      function updateCart(_id) {
+            for (var i = 0; i < cart.value.length; i++) {
+                if(cart.value[i].id === _id){
+                    cart.value[i].amount++;
+                    return;
+                }
+            }
+            cart.value.push({id:_id, amount: 1})
+            return;
+        }
 
-      //6.6 Add the update image which will change the image attribute
-      function updateImage(variantImage) {
-        image.value = variantImage;
-      }
+        function removeFromCart(_id) {
+            for (var i = 0; i < cart.value.length; i++) {
+                if (cart.value[i].id === _id) {
+                    cart.value[i].amount--;
+                    if (cart.value[i].amount === 0) {
+                        cart.value.splice(i, 1);
+                    }
+                    return;
+                }
+            }
+        }
 
-      //6.7 Add new button which will toggle the inStock status
-      function toggleInStock() {
-        inStock.value = !inStock.value;
-      }
+      
 
       // 8.2
       const title = computed(() => {
@@ -102,13 +113,11 @@
       return {
         title,
         image,
-        productLink,
         inStock,
         inventory,
         onsale,
         details,
         variants,
-        sizes,
         cart,
         addToCart,
         updateImage,
@@ -122,6 +131,6 @@
   app.component('product-display', productDisplay);
   app.mount("#app");
 
-</script>
+</script> -->
 
 </html>
